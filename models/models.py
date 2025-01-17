@@ -15,6 +15,7 @@ from sqlalchemy import create_engine
 
 from sqlalchemy.orm import validates
 
+
 class Base(DeclarativeBase):
     pass
 
@@ -26,6 +27,7 @@ emprunte = Table(
     Column("materiel_id", ForeignKey("materiel.materiel_id")),
 )
 
+
 class Materiel(Base):
     __tablename__ = 'materiel'
 
@@ -36,6 +38,7 @@ class Materiel(Base):
 
     def __repr__(self):
         return f'{self.nom}: {self.quantite_emprunte} / {self.quantite}'
+
 
 class Agent(Base):
     __tablename__ = 'agent'
@@ -60,7 +63,6 @@ class Agent(Base):
         if materiel.quantite_emprunte > materiel.quantite:
             raise ValueError('Quantite insuffisante')
         return materiel
-
 
 
 if __name__ == '__main__':

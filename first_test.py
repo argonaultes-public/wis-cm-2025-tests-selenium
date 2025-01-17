@@ -24,6 +24,7 @@ KNOWN_FACES = [
     {"name": "Bob", "encoding": None}  # Ajouter une photo de Bob nommée "bob.png"
 ]
 
+
 # Fonction pour démarrer la caméra et afficher le flux vidéo
 def start_camera(feed_label, stop_flag):
     video_capture = cv2.VideoCapture(0, cv2.CAP_DSHOW)
@@ -47,6 +48,7 @@ def start_camera(feed_label, stop_flag):
     thread = Thread(target=update_feed, daemon=True)
     thread.start()
 
+
 # Initialiser les visages connus
 def initialize_known_faces():
     for face in KNOWN_FACES:
@@ -60,6 +62,7 @@ def initialize_known_faces():
                 print(f"Aucun visage détecté dans {image_path}")
         except Exception as e:
             print(f"Erreur avec le fichier {image_path}: {e}")
+
 
 # Identifier directement l'utilisateur depuis le flux vidéo
 def verify_access_direct(video_capture, main_frame, root):
@@ -83,6 +86,7 @@ def verify_access_direct(video_capture, main_frame, root):
 
     messagebox.showerror("Accès refusé", "Visage non reconnu. Accès refusé.")
 
+
 # Afficher l'interface de l'inventaire
 def show_inventory_interface(main_frame, name, root):
     for widget in main_frame.winfo_children():
@@ -94,7 +98,8 @@ def show_inventory_interface(main_frame, name, root):
         start_camera_interface(main_frame, root)
 
     # Bouton identification
-    tk.Button(main_frame, text="Identification", command=identify_again, font=("Helvetica", 12), padx=10, pady=5).pack(side=tk.TOP, anchor="nw", padx=10, pady=10)
+    id_btn = tk.Button(main_frame, text="Identification", command=identify_again, font=("Helvetica", 12), padx=10, pady=5)
+    id_btn.pack(side=tk.TOP, anchor="nw", padx=10, pady=10)
 
     # Afficher l'image de l'utilisateur en haut à droite
     try:
@@ -121,10 +126,12 @@ def show_inventory_interface(main_frame, name, root):
     # Bouton de validation
     def submit():
         selected_items = [MATERIALS[i] for i, var in enumerate(checkbox_vars) if var.get() == 1]
+
         messagebox.showinfo("Confirmation", f"Matériel emprunté par {name}: {', '.join(selected_items)}")
         root.destroy()
 
     tk.Button(main_frame, text="Valider", command=submit, font=("Helvetica", 12), padx=10, pady=5).pack(pady=10)
+
 
 # Interface principale
 def start_camera_interface(main_frame, root):
@@ -151,6 +158,7 @@ def start_camera_interface(main_frame, root):
         command=lambda: verify_access_direct(video_capture, main_frame, root)
     ).pack()
 
+
 # Lancer l'interface
 def open_camera_interface():
     initialize_known_faces()
@@ -165,6 +173,7 @@ def open_camera_interface():
     start_camera_interface(main_frame, root)
 
     root.mainloop()
+
 
 if __name__ == "__main__":
     open_camera_interface()

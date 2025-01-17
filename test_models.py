@@ -6,11 +6,12 @@ from sqlalchemy import select
 
 import pytest
 
+
 class TestModels:
 
     def setup_method(self):
         self.engine = create_engine("sqlite://", echo=True)
-        Base.metadata.create_all(self.engine)        
+        Base.metadata.create_all(self.engine)
 
     def test_create_db_sqlite(self):
         with Session(self.engine) as session:
@@ -21,7 +22,7 @@ class TestModels:
 
             session.add_all([lampe, blouson, bobsponge])
             session.commit()
-        
+
         session = Session(self.engine)
         stmt = select(Agent).where(Agent.nom.in_(['sponge']))
         agents = session.scalars(stmt).fetchall()
@@ -42,5 +43,3 @@ class TestModels:
 
                 session.add_all([lampe, bobsponge, clarkkent, brucewayne])
                 session.commit()
-
-  

@@ -15,14 +15,16 @@ KNOWN_FACES = [
     {"name": "Bob", "encoding": None}  # Fichier image attendu : "bob.png"
 ]
 
+
 def initialize_known_faces():
     for face in KNOWN_FACES:
         try:
             img = face_recognition.load_image_file(face["name"].lower() + ".png")
             enc = face_recognition.face_encodings(img)
             face["encoding"] = enc[0] if enc else None
-        except:
+        except SystemError:
             face["encoding"] = None
+
 
 def update_feed(video_capture, feed_label, stop_flag):
     while not stop_flag[0]:
@@ -39,10 +41,12 @@ def update_feed(video_capture, feed_label, stop_flag):
                 break
     video_capture.release()
 
+
 def start_camera(feed_label, stop_flag):
     video_capture = cv2.VideoCapture(0, cv2.CAP_DSHOW)
     Thread(target=update_feed, args=(video_capture, feed_label, stop_flag), daemon=True).start()
     return video_capture
+
 
 def verify_access_direct(video_capture, main_frame, root):
     ret, frame = video_capture.read()
@@ -63,6 +67,7 @@ def verify_access_direct(video_capture, main_frame, root):
                     return
     messagebox.showerror("Accès refusé", "Visage non reconnu. Accès refusé.")
 
+
 def show_inventory_interface(main_frame, name, root):
     for widget in main_frame.winfo_children():
         widget.destroy()
@@ -81,7 +86,7 @@ def show_inventory_interface(main_frame, name, root):
         label = tk.Label(main_frame, image=photo)
         label.image = photo
         label.pack(side=tk.TOP, anchor="ne", padx=10, pady=10)
-    except:
+    except ValueError:
         pass
 
     tk.Label(main_frame, text=f"Bienvenue {name}. Sélectionnez le matériel emprunté:",
@@ -97,6 +102,7 @@ def show_inventory_interface(main_frame, name, root):
         root.destroy()
 
     tk.Button(main_frame, text="Valider", command=submit, font=("Helvetica", 12), padx=10, pady=5).pack(pady=10)
+
 
 def start_camera_interface(main_frame, root):
     for w in main_frame.winfo_children():
@@ -116,6 +122,7 @@ def start_camera_interface(main_frame, root):
               font=("Helvetica", 14), padx=20, pady=10,
               command=lambda: verify_access_direct(video_capture, main_frame, root)).pack()
 
+
 def open_camera_interface():
     initialize_known_faces()
     root = tk.Tk()
@@ -125,6 +132,7 @@ def open_camera_interface():
     main_frame.pack(fill=tk.BOTH, expand=True, padx=10, pady=10)
     start_camera_interface(main_frame, root)
     root.mainloop()
+
 
 if __name__ == "__main__":
     open_camera_interface()
