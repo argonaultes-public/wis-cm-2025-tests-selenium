@@ -25,6 +25,8 @@ jobs:
           MYSQL_DATABASE: gosecuri
           MYSQL_USER: gosecuriuser
           MYSQL_PASSWORD: secret
+        ports:
+          - 3306:3306
 
     steps:
     - uses: actions/checkout@v4
@@ -43,8 +45,46 @@ jobs:
         flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
         # exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
         flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
-    - name: Test with pytest
+    - name: Test with pytest and mysql
       run: |
         pytest test_models.py
+      env:
+        DB_URL: ${{ vars.DB_URL }}
+    - name: Test with pytest and sqlite
+      run: |
+        pytest test_models.py
+      env:
+        DB_URL: "sqlite://"
+
+  validatetest:
+    runs-on: ubuntu-latest
+
+    services:
+      db:
+        image: mysql:latest
+        env:
+          MYSQL_ROOT_PASSWORD: my-secret-pw
+          MYSQL_DATABASE: gosecuri
+          MYSQL_USER: gosecuriuser
+          MYSQL_PASSWORD: secret  
+
+    steps:
+    - uses: actions/checkout@v4
+    - name: Set up Python 3.11
+      uses: actions/setup-python@v3
+      with:
+        python-version: "3.11"
+    - name: Install dependencies
+      run: |
+        apt install -y firefox
+        python -m pip install --upgrade pip
+        pip install pytest selenium
+        if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+    - name: Start flask server
+      run: |
+        nohup flask --app gosecuri run --debug > nohup.out 2> nohup.err < /dev/null &
+    - name: Test with Selenium
+      run: |
+        pytest test_validation.py
       env:
         DB_URL: ${{ vars.DB_URL }}

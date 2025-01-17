@@ -32,6 +32,6 @@ def agent_details(agent_id):
     engine = create_engine(os.getenv('DB_URL'), echo=True)
     Base.metadata.create_all(engine)
     session = Session(engine)
-    stmt = select(Agent).where(Agent.agent_id.is_(agent_id))
+    stmt = select(Agent).where(Agent.agent_id == agent_id)
     agent = session.scalars(stmt).first()
     return f"<p class=\"agent\">{agent}</p>"
