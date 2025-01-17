@@ -64,6 +64,9 @@ class Agent(Base):
             raise ValueError('Quantite insuffisante')
         return materiel
 
+    def __repr__(self):
+        return f'{self.nom} {self.prenom} ({self.photo})'
+
 
 if __name__ == '__main__':
     engine = create_engine("sqlite:///tst.db", echo=True)
