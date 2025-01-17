@@ -17,6 +17,15 @@ jobs:
 
     runs-on: ubuntu-latest
 
+    services:
+      db:
+        image: mysql:latest
+        env:
+          MYSQL_ROOT_PASSWORD: my-secret-pw
+          MYSQL_DATABASE: gosecuri
+          MYSQL_USER: gosecuriuser
+          MYSQL_PASSWORD: secret
+
     steps:
     - uses: actions/checkout@v4
     - name: Set up Python 3.11

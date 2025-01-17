@@ -44,7 +44,7 @@ class Agent(Base):
     __tablename__ = 'agent'
 
     agent_id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
-    photo: Mapped[str]
+    photo: Mapped[str] = mapped_column(String(250))
     nom: Mapped[str] = mapped_column(String(35))
     prenom: Mapped[str] = mapped_column(String(35))
 

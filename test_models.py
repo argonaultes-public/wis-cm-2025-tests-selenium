@@ -6,14 +6,18 @@ from sqlalchemy import select
 
 import pytest
 
+import os
+
+from dotenv import load_dotenv
 
 class TestModels:
 
     def setup_method(self):
-        self.engine = create_engine("sqlite://", echo=True)
+        load_dotenv()
+        self.engine = create_engine(os.getenv('DB_URL'), echo=True)
         Base.metadata.create_all(self.engine)
 
-    def test_create_db_sqlite(self):
+    def test_create_db(self):
         with Session(self.engine) as session:
             lampe = Materiel(nom='lampe', quantite=15)
             blouson = Materiel(nom='blouson', quantite=30)
