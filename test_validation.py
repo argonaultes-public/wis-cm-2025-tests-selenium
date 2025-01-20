@@ -29,7 +29,7 @@ class TestValidation:
         options = webdriver.FirefoxOptions()
         options.add_argument("--no-sandbox")
         options.add_argument("--disable-dev-shm-usage")
-#        options.add_argument("--headless")
+        options.add_argument("--headless")
 #        driver = webdriver.Remote(command_executor='http://localhost:4444', options=options)
         self.driver = webdriver.Firefox(options=options)
 
