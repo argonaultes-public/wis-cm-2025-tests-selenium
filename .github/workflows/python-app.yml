@@ -15,10 +15,10 @@ permissions:
 jobs:
   unittest:
 
-    runs-on: ubuntu-latest
+    runs-on: gaelroustan/faceoui:unit
 
     services:
-      db:
+      mysql:
         image: mysql:latest
         env:
           MYSQL_ROOT_PASSWORD: my-secret-pw
@@ -30,14 +30,8 @@ jobs:
 
     steps:
     - uses: actions/checkout@v4
-    - name: Set up Python 3.11
-      uses: actions/setup-python@v3
-      with:
-        python-version: "3.11"
     - name: Install dependencies
       run: |
-        python -m pip install --upgrade pip
-        pip install flake8 pytest
         if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
     - name: Lint with flake8
       run: |
@@ -49,7 +43,7 @@ jobs:
       run: |
         pytest test_models.py
       env:
-        DB_URL: ${{ vars.DB_URL }}
+        DB_URL: "mysql+pymysql://gosecuriuser:secret@mysql/gosecuri"
     - name: Test with pytest and sqlite
       run: |
         pytest test_models.py
@@ -57,10 +51,10 @@ jobs:
         DB_URL: "sqlite://"
 
   validatetest:
-    runs-on: ubuntu-latest
+    runs-on: gaelroustan/faceoui:validation
 
     services:
-      db:
+      mysql:
         image: mysql:latest
         env:
           MYSQL_ROOT_PASSWORD: my-secret-pw
@@ -70,15 +64,8 @@ jobs:
 
     steps:
     - uses: actions/checkout@v4
-    - name: Set up Python 3.11
-      uses: actions/setup-python@v3
-      with:
-        python-version: "3.11"
     - name: Install dependencies
       run: |
-        apt install -y firefox
-        python -m pip install --upgrade pip
-        pip install pytest selenium
         if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
     - name: Start flask server
       run: |
