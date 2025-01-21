@@ -22,7 +22,7 @@ def initialize_known_faces():
             img = face_recognition.load_image_file(face["name"].lower() + ".png")
             enc = face_recognition.face_encodings(img)
             face["encoding"] = enc[0] if enc else None
-        except SystemError:
+        except:
             face["encoding"] = None
 
 
@@ -43,7 +43,8 @@ def update_feed(video_capture, feed_label, stop_flag):
 
 
 def start_camera(feed_label, stop_flag):
-    video_capture = cv2.VideoCapture(0, cv2.CAP_DSHOW)
+    print('capturing video')
+    video_capture = cv2.VideoCapture(0)
     Thread(target=update_feed, args=(video_capture, feed_label, stop_flag), daemon=True).start()
     return video_capture
 
@@ -56,6 +57,8 @@ def verify_access_direct(video_capture, main_frame, root):
 
     rgb_frame = frame[:, :, ::-1]
     locations = face_recognition.face_locations(rgb_frame)
+    print("###############")
+    print(type(locations))
     encodings = face_recognition.face_encodings(rgb_frame, locations)
 
     for encoding in encodings:
@@ -86,7 +89,7 @@ def show_inventory_interface(main_frame, name, root):
         label = tk.Label(main_frame, image=photo)
         label.image = photo
         label.pack(side=tk.TOP, anchor="ne", padx=10, pady=10)
-    except ValueError:
+    except:
         pass
 
     tk.Label(main_frame, text=f"Bienvenue {name}. Sélectionnez le matériel emprunté:",
